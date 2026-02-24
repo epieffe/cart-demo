@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:15432/cart-demo
+    username: postgres
+    password: mypassword

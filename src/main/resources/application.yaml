@@ -1,3 +1,17 @@
 spring:
   application:
     name: cart-demo
+  profiles:
+    active: local
+  jpa:
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+springdoc:
+  api-docs:
+    title: Cart Demo API
+    enabled: true
+  swagger-ui:
+    enabled: true
