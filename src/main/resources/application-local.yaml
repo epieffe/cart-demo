@@ -3,3 +3,12 @@ spring:
     url: jdbc:postgresql://localhost:15432/cart-demo
     username: postgres
     password: mypassword
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    dev.epieffe.demo.cart: DEBUG
+    sql: DEBUG
