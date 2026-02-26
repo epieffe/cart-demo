@@ -11,5 +11,10 @@ public class PriceUtil {
 		return totalPrice.divide(BigDecimal.ONE.add(vatRate), SCALE, RoundingMode.HALF_UP);
 	}
 
+	public static BigDecimal computeVatAmount(BigDecimal totalPrice, BigDecimal vatRate) {
+		BigDecimal netPrice = computeNetPrice(totalPrice, vatRate);
+		return totalPrice.subtract(netPrice);
+	}
+
 	private PriceUtil() {}
 }

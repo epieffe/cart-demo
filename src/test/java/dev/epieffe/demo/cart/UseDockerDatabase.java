@@ -15,6 +15,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Testcontainers
 @Import(TestContainersConfig.class)
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/cleanup.sql")
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 public @interface UseDockerDatabase { }
