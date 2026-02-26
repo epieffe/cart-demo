@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Testcontainers
 @Import(TestContainersConfig.class)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 public @interface UseDockerDatabase { }
