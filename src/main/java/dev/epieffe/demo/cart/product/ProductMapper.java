@@ -8,11 +8,7 @@ public class ProductMapper {
 
 	public static Product fromRequest(ProductRequest request) {
 		var product = new Product();
-		product.setName(request.name());
-		product.setDescription(request.description());
-		product.setTotalPrice(request.totalPrice());
-		product.setVatRate(request.vatRate());
-		return product;
+		return updateFromRequest(product, request);
 	}
 
 	public static ProductResponse toResponse(Product product) {

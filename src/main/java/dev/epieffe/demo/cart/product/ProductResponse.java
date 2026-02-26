@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
-@Schema(description = "Risposta dettagliata di un prodotto")
+@Schema(description = "Product response payload")
 public record ProductResponse(
 		@Schema(description = "Product id", example = "101")
 		Long id,

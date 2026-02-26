@@ -88,7 +88,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Invalid totalPrice"));
 	}
 
 	@Test
@@ -102,7 +103,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must greater than zero"));
 	}
 
 	@Test
@@ -116,7 +118,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must greater than zero"));
 	}
 
 	@Test
@@ -129,7 +132,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product name must be provided"));
 	}
 
 	@Test
@@ -142,7 +146,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product description must be provided"));
 	}
 
 	@Test
@@ -155,7 +160,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must be provided"));
 	}
 
 	@Test
@@ -168,7 +174,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product vatRate must be provided"));
 	}
 
 	@Test
@@ -262,7 +269,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Invalid totalPrice"));
 	}
 
 	@Test
@@ -276,7 +284,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must greater than zero"));
 	}
 
 	@Test
@@ -290,7 +299,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must greater than zero"));
 	}
 
 	@Test
@@ -303,7 +313,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product name must be provided"));
 	}
 
 	@Test
@@ -316,7 +327,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product description must be provided"));
 	}
 
 	@Test
@@ -329,7 +341,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product totalPrice must be provided"));
 	}
 
 	@Test
@@ -342,7 +355,8 @@ class ProductApiTest {
 				}
 				""";
 		mockMvc.perform(put("/api/products/1").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product vatRate must be provided"));
 	}
 
 	@Test

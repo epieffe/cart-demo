@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-@Schema(description = "Payload per la creazione di un prodotto")
+@Schema(description = "Product request payload")
 public record ProductRequest(
 		@Schema(description = "Product name", example = "Samsung Galaxy S21")
 		@NotNull(message = "Product name must be provided")
