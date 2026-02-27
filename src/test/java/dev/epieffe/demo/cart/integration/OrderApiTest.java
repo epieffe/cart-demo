@@ -196,7 +196,7 @@ public class OrderApiTest {
 				""";
 		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Product quantity must greater than zero"));
+				.andExpect(jsonPath("$.detail").value("Product quantity must be greater than zero"));
 	}
 
 	@Test
@@ -218,7 +218,7 @@ public class OrderApiTest {
 				""";
 		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Product quantity must greater than zero"));
+				.andExpect(jsonPath("$.detail").value("Product quantity must be greater than zero"));
 	}
 
 	@Test

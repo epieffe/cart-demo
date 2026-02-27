@@ -24,7 +24,7 @@ public record OrderRequest(
 			Long productId,
 
 			@Schema(description = "Number of products ordered", example = "1")
-			@Positive(message = "Product quantity must greater than zero")
+			@Positive(message = "Product quantity must be greater than zero")
 			@NotNull(message = "Missing quantity for product")
 			Integer quantity
 	) { }
