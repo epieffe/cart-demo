@@ -8,12 +8,16 @@ POSTGRES_CONTAINER="epieffe-cart-demo-tests-postgres"
 CART_DEMO_IMAGE="epieffe/cart-demo-base"
 CART_DEMO_CONTAINER="epieffe-cart-demo-tests"
 
+set -e
 
 cleanup() {
     echo ""
-    echo "Shutting down Docker containers..."
+    echo "Shutting down $CART_DEMO_CONTAINER container..."
     docker stop $CART_DEMO_CONTAINER >/dev/null 2>&1
+    echo "Shutting down $POSTGRES_CONTAINER container..."
     docker stop $POSTGRES_CONTAINER >/dev/null 2>&1
+    echo "Deleting $NETWORK_NAME network..."
+    docker network rm NETWORK_NAME >/dev/null 2>&1
     echo "Done"
     exit 0
 }
@@ -60,7 +64,6 @@ docker run -d \
     -e DB_URL=jdbc:postgresql://${POSTGRES_CONTAINER}:5432/cart-demo \
     -e DB_USERNAME=postgres \
     -e DB_PASSWORD=mypassword \
-    -p 8080:8080 \
     $CART_DEMO_IMAGE \
     mvn -e test
 

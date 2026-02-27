@@ -6,6 +6,19 @@
  - Spring Boot 4
  - PostgreSQL 18
 
+**Table of contents:**
+- [Documentation](#documentation)
+    - [Data model](#data-model)
+    - [Vat amount computation](#vat-amount-computation)
+    - [API endpoints](#api-endpoints)
+- [How to run](#how-to-run)
+    - [Run using Docker Compose](#run-using-docker-compose)
+    - [Run using the run script](#run-using-the-run-script)
+    - [Run in development mode](#run-in-development-mode)
+- [Running tests](#running-tests)
+    - [Run tests in Docker container](#run-tests-in-docker-container)
+    - [Run tests using Java](#run-tests-using-java)
+
 ## Documentation
 This section contains documentation for the Cart Demo service, as well as the considerations taken during the design phase.
 
@@ -198,13 +211,20 @@ Example response body:
 ```
 
 ## How to run
-This section describes how to run the Cart Demo service on your local machine.
+The Cart Demo service requires a PostgreSQL instance to run. When running using Docker Compose
+or the provided run script a PostgreSQL instance is automatically started in a Docker container.
+
+When running in production or development, connection details for PostgreSQL can be provided
+through the following environment variables:
+- `DB_URL`: JDBC URL for the database
+- `DB_USERNAME`: database username
+- `DB_PASSWORD`: database password
 
 When you have the Cart Demo service running, visit the following url to access the API documentation in the Swagger UI:
 
 http://127.0.0.1:8080/swagger-ui.html
 
-#### Using Docker Compose
+### Run using Docker Compose
 This is the simplest way to run the Cart Demo service:
 ```bash
 docker compose up -d
@@ -213,7 +233,7 @@ This will start the following containers:
 - Cart Demo service exposing port 8080
 - PostgreSQL exposing port 15432
 
-#### Using the run script
+### Run using the run script
 If you don't have Docker Compose, you can run the Cart Demo service using the provided run script:
 ```bash
 ./scripts/run.sh
@@ -226,12 +246,12 @@ This script will:
 - Run a container with the Cart Demo service exposing port 8080
 - Attach to the Cart Demo service container logs
 
-When the script terminates, all the created containers are deleted, while the Docker network and volume still remain on your system.
+When the script terminates, all the created containers are deleted, while the Docker volume still remains on your system.
 
-#### Development mode
+### Run in development mode
 This requires Java 21 or higher.
 
-First start a Docker container with PostgreSQL 18:
+First start a Docker container with PostgreSQL:
 ```bash
 docker compose up -d postgres
 ```
@@ -244,17 +264,35 @@ docker run -d \
     -e POSTGRES_DB=cart-demo \
     postgres:18-alpine
 ```
-
-Now run the Cart Demo service in development mode:
+if you use the default connection parameters, there is no need to set environment variables.
+Simply run the Cart Demo service in development mode:
 ```bash
 ./mvnw spring-boot:run
 ```
 
-### Running tests
-WIP
+## Running tests
+Running the test suite for the Cart Demo service requires a PostgreSQL instance. If the `local` Spring profile
+is active, the application will use the Docker socket to automatically start a PostgreSQL container,
+otherwise it will connect to an external PostgreSQL instance as usual.
 
-#### Using Docker
-WIP
 
-#### Using Java
-This requires Java 21 or higher.
+### Run tests in Docker container
+You can use the provided tests script to run the test suite in a Docker container:
+```bash
+./scripts/tests.sh
+```
+This script will:
+- Build the base Cart Demo Docker image from Dockerfile
+- Create a Docker network if it doesn't exist
+- Run a container with PostgreSQL
+- Run a container that executes the Cart Demo test suite
+- Attach to the Cart Demo tests logs
+
+When the script terminates, all the created containers are deleted.
+
+### Run tests using Java
+This requires Java 21 or higher:
+```bash
+./mvnw test
+```
+This will use the Docker socket to automatically start a PostgreSQL container.

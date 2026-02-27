@@ -13,9 +13,12 @@ set -e
 
 cleanup() {
     echo ""
-    echo "Shutting down Docker containers..."
+    echo "Shutting down $CART_DEMO_CONTAINER container..."
     docker stop $CART_DEMO_CONTAINER >/dev/null 2>&1
+    echo "Shutting down $POSTGRES_CONTAINER container..."
     docker stop $POSTGRES_CONTAINER >/dev/null 2>&1
+    echo "Deleting $NETWORK_NAME network..."
+    docker network rm NETWORK_NAME >/dev/null 2>&1
     echo "Done"
     exit 0
 }
@@ -57,6 +60,7 @@ docker run -d \
     -e POSTGRES_PASSWORD=mypassword \
     -e POSTGRES_DB=cart-demo \
     -v $POSTGRES_VOLUME:/var/lib/postgresql \
+    -p 15432:5432 \
     $POSTGRES_IMAGE
 
 # Start Cart Demo Service Docker container
