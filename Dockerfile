@@ -7,4 +7,6 @@ RUN mvn -q -e compile -DskipTests
 
 FROM base AS runtime
 RUN mvn -q -e package -DskipTests
+ENV SPRING_PROFILES_ACTIVE=docker
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "target/cart-demo.jar"]

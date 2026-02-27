@@ -3,6 +3,10 @@ spring:
     name: cart-demo
   profiles:
     active: local
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     open-in-view: false
     properties:
@@ -17,3 +21,7 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+logging:
+  level:
+    dev.epieffe.demo.cart: DEBUG

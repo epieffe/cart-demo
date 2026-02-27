@@ -64,7 +64,6 @@ docker run -d \
     --name $CART_DEMO_CONTAINER \
     --network $NETWORK_NAME \
     --rm \
-    -e SPRING_PROFILES_ACTIVE=docker \
     -e DB_URL=jdbc:postgresql://${POSTGRES_CONTAINER}:5432/cart-demo \
     -e DB_USERNAME=postgres \
     -e DB_PASSWORD=mypassword \

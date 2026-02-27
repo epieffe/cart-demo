@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-logging:
-  level:
-    dev.epieffe.demo.cart: DEBUG

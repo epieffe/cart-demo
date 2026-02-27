@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
-@Profile("!docker")
+@Profile("local")
 @Testcontainers
 @TestConfiguration
 public class TestContainersConfig {
