@@ -125,6 +125,36 @@ class ProductApiTest {
 	}
 
 	@Test
+	void createProductWithNegativeVatRate_shouldReturnBadRequest() throws Exception {
+		String json = """
+				{
+					"name": "Expensive Keyboard",
+					"description": "High quality mechanical keyboard",
+					"totalPrice": 100,
+					"vatRate": -0.22
+				}
+				""";
+		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product vatRate must greater than zero"));
+	}
+
+	@Test
+	void createProductWithZeroVatRate_shouldReturnBadRequest() throws Exception {
+		String json = """
+				{
+					"name": "Expensive Keyboard",
+					"description": "High quality mechanical keyboard",
+					"totalPrice": 100,
+					"vatRate": 0.00
+				}
+				""";
+		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.detail").value("Product vatRate must greater than zero"));
+	}
+
+	@Test
 	void createProductWithMissingName_shouldReturnBadRequest() throws Exception {
 		String json = """
 				{
@@ -185,10 +215,10 @@ class ProductApiTest {
 		// Create a product
 		String postJson = """
 				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
+					"name": "Keyboard",
+					"description": "Mechanical keyboard",
+					"totalPrice": 80,
+					"vatRate": 0.20
 				}
 				""";
 		MvcResult result = mockMvc.perform(post("/api/products")
@@ -223,10 +253,10 @@ class ProductApiTest {
 		// Create a product
 		String postJson = """
 				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
+					"name": "Keyboard",
+					"description": "Mechanical keyboard",
+					"totalPrice": 80,
+					"vatRate": 0.20
 				}
 				""";
 		MvcResult result = mockMvc.perform(post("/api/products")
@@ -251,7 +281,7 @@ class ProductApiTest {
 		// Get the updated product
 		mockMvc.perform(get("/api/products/" + id))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").isNumber())
+				.andExpect(jsonPath("$.id").value(id))
 				.andExpect(jsonPath("$.name").value("Expensive Keyboard"))
 				.andExpect(jsonPath("$.description").value("High quality mechanical keyboard"))
 				.andExpect(jsonPath("$.totalPrice").value(100))
