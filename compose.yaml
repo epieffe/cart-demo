@@ -1,9 +1,24 @@
 services:
-  db:
+  service:
+    image: epieffe/cart-demo
+    build: .
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/cart-demo
+      DB_USERNAME: postgres
+      DB_PASSWORD: mypassword
+    ports:
+        - 8080:8080
+
+  postgres:
     image: postgres:18-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mypassword
       POSTGRES_DB: cart-demo
+    volumes:
+      - db:/var/lib/postgresql
     ports:
       - 15432:5432
+
+volumes:
+  db:
