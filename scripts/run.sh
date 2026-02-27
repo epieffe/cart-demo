@@ -9,6 +9,7 @@ POSTGRES_VOLUME="epieffe-cart-demo-postgres-volume"
 CART_DEMO_IMAGE="epieffe/cart-demo"
 CART_DEMO_CONTAINER="epieffe-cart-demo-service"
 
+set -e
 
 cleanup() {
     echo ""
