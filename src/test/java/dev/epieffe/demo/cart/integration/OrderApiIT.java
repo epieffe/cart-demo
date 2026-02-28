@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @UseDockerDatabase
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "/sql/populate_products.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/clean_orders.sql")
-public class OrderApiTest {
+public class OrderApiIT {
 
 	@Autowired
 	private MockMvc mockMvc;

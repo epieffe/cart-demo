@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @UseDockerDatabase
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/clean_products.sql")
-class ProductApiTest {
+class ProductApiIT {
 
 	@Autowired
 	private MockMvc mockMvc;
