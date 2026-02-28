@@ -147,6 +147,8 @@ public class ProductController {
 		LOG.info("Received request to search products: {}, {}", search, pageable);
 		Slice<ProductResponse> result = productService.searchProducts(search, pageable)
 				.map(ProductMapper::toResponse);
-		return ResponseEntity.ok(result.getContent());
+		return ResponseEntity.ok()
+				.header("X-Has-Next", String.valueOf(result.hasNext()))
+				.body(result.getContent());
 	}
 }
