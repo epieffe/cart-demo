@@ -1,4 +1,4 @@
-package dev.epieffe.demo.cart.integration;
+package dev.epieffe.demo.cart.order;
 
 import com.jayway.jsonpath.JsonPath;
 import dev.epieffe.demo.cart.UseDockerDatabase;
@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @UseDockerDatabase
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "/sql/populate_products.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/clean_orders.sql")
-public class OrderApiTest {
+public class OrdersApiIT {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -111,117 +112,6 @@ public class OrderApiTest {
 	}
 
 	@Test
-	void createOrderWithMissingProducts_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5"
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Order must contain at least one product"));
-	}
-
-	@Test
-	void createOrderWithEmptyProducts_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5",
-				  "products": []
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Order must contain at least one product"));
-	}
-
-	@Test
-	void createOrderWithMissingProductId_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5",
-				  "products": [
-				    {
-				      "quantity": 2
-				    },
-				    {
-				      "productId": 2,
-				      "quantity": 1
-				    }
-				  ]
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Missing productId for product"));
-	}
-
-	@Test
-	void createOrderWithMissingQuantity_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5",
-				  "products": [
-				    {
-				      "productId": 1
-				    },
-				    {
-				      "productId": 2,
-				      "quantity": 1
-				    }
-				  ]
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Missing quantity for product"));
-	}
-
-	@Test
-	void createOrderWithZeroQuantity_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5",
-				  "products": [
-				    {
-				      "productId": 1,
-				      "quantity": 0
-				    },
-				    {
-				      "productId": 2,
-				      "quantity": 1
-				    }
-				  ]
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Product quantity must be greater than zero"));
-	}
-
-	@Test
-	void createOrderWithNegativeQuantity_shouldReturnBadRequest() throws Exception {
-		String json = """
-				{
-				  "shippingAddress": "via Roma, 5",
-				  "products": [
-				    {
-				      "productId": 1,
-				      "quantity": -1
-				    },
-				    {
-				      "productId": 2,
-				      "quantity": 1
-				    }
-				  ]
-				}
-				""";
-		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.detail").value("Product quantity must be greater than zero"));
-	}
-
-	@Test
 	void createOrderForNotExistingProduct_shouldReturnBadRequest() throws Exception {
 		String json = """
 				{
@@ -263,5 +153,54 @@ public class OrderApiTest {
 		mockMvc.perform(post("/api/orders").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.detail").value("Duplicate product: 1"));
+	}
+
+	@Test
+	void getOrder_shouldPersistOrderAfterProductIsDeleted() throws Exception {
+		// Create an order
+		String json = """
+				{
+				  "shippingAddress": "via Roma, 5",
+				  "products": [
+				    {
+				      "productId": 1,
+				      "quantity": 2
+				    }
+				  ]
+				}
+				""";
+		MvcResult result = mockMvc.perform(post("/api/orders")
+						.contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated())
+				.andReturn();
+
+		Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+
+		// Get product and expect 200 OK
+		mockMvc.perform(get("/api/products/1"))
+				.andExpect(status().isOk());
+
+		// Delete the product
+		mockMvc.perform(delete("/api/products/1"))
+				.andExpect(status().isNoContent());
+
+		// Get product and expect 404 Not Found
+		mockMvc.perform(get("/api/products/1"))
+				.andExpect(status().isNotFound());
+
+		// Get the created order
+		mockMvc.perform(get("/api/orders/" + id))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(id))
+				.andExpect(jsonPath("$.shippingAddress").value("via Roma, 5"))
+				.andExpect(jsonPath("$.createdAt").exists())
+				.andExpect(jsonPath("$.totalPrice").value(1600))
+				.andExpect(jsonPath("$.vatAmount").isNumber())
+				.andExpect(jsonPath("$.products[0].productId").value(1))
+				.andExpect(jsonPath("$.products[0].quantity").value(2))
+				.andExpect(jsonPath("$.products[0].name").value("Samsung Galaxy S24"))
+				.andExpect(jsonPath("$.products[0].totalPrice").value(1600))
+				.andExpect(jsonPath("$.products[0].vatAmount").isNumber())
+				.andExpect(jsonPath("$.products[0].vatRate").value("0.22"));
 	}
 }

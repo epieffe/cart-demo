@@ -65,7 +65,7 @@ docker run -d \
     -e DB_USERNAME=postgres \
     -e DB_PASSWORD=mypassword \
     $CART_DEMO_IMAGE \
-    mvn -e test
+    mvn -e verify
 
 # Show logs for Cart Demo Service container
 docker logs -f $CART_DEMO_CONTAINER

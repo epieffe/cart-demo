@@ -1,16 +1,19 @@
-package dev.epieffe.demo.cart.integration;
+package dev.epieffe.demo.cart.product;
 
-import com.jayway.jsonpath.JsonPath;
-import dev.epieffe.demo.cart.UseDockerDatabase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,65 +21,42 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@UseDockerDatabase
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/clean_products.sql")
-class ProductApiTest {
+@WebMvcTest(ProductController.class)
+public class ProductControllerTest {
 
 	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 
-	@Test
-	void createProduct_shouldReturnProduct() throws Exception {
-		// Create a product
-		String json = """
-				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
-				}
-				""";
-		mockMvc.perform(post("/api/products").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").isNumber())
-				.andExpect(jsonPath("$.name").value("Expensive Keyboard"))
-				.andExpect(jsonPath("$.description").value("High quality mechanical keyboard"))
-				.andExpect(jsonPath("$.totalPrice").value(100))
-				.andExpect(jsonPath("$.vatRate").value(0.22))
+	@MockitoBean
+	ProductService productService;
+
+	@ParameterizedTest
+	@MethodSource("productsProvider")
+	void getExistingProduct_shouldReturnProduct(Product product) throws Exception {
+		when(productService.getProductById(product.getId())).thenReturn(Optional.of(product));
+		mockMvc.perform(get("/api/products/" + product.getId()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(product.getId()))
+				.andExpect(jsonPath("$.name").value(product.getName()))
+				.andExpect(jsonPath("$.description").value(product.getDescription()))
+				.andExpect(jsonPath("$.totalPrice").value(product.getTotalPrice().doubleValue()))
+				.andExpect(jsonPath("$.vatRate").value(product.getVatRate().doubleValue()))
 				.andExpect(jsonPath("$.netPrice").isNumber())
 				.andExpect(jsonPath("$.vatAmount").isNumber());
 	}
 
 	@Test
-	void createProduct_shouldPersistProduct() throws Exception {
-		// Create a product
-		String postJson = """
-				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
-				}
-				""";
-		MvcResult result = mockMvc.perform(post("/api/products")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(postJson))
-				.andExpect(status().isCreated())
-				.andReturn();
+	void getNonExistentProduct_shouldReturnNotFound() throws Exception {
+		when(productService.getProductById(1L)).thenReturn(Optional.empty());
+		mockMvc.perform(get("/api/products/1"))
+				.andExpect(status().isNotFound());
+	}
 
-		Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-		// Get the created product
-		mockMvc.perform(get("/api/products/" + id))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(id))
-				.andExpect(jsonPath("$.name").value("Expensive Keyboard"))
-				.andExpect(jsonPath("$.description").value("High quality mechanical keyboard"))
-				.andExpect(jsonPath("$.totalPrice").value(100))
-				.andExpect(jsonPath("$.vatRate").value(0.22))
-				.andExpect(jsonPath("$.netPrice").isNumber())
-				.andExpect(jsonPath("$.vatAmount").isNumber());
+	@Test
+	void deleteProduct_shouldReturnNoContent() throws Exception {
+		doNothing().when(productService).deleteProductById(1L);
+		mockMvc.perform(delete("/api/products/1"))
+				.andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -211,86 +191,6 @@ class ProductApiTest {
 	}
 
 	@Test
-	void updateProduct_shouldReturnProduct() throws Exception {
-		// Create a product
-		String postJson = """
-				{
-					"name": "Keyboard",
-					"description": "Mechanical keyboard",
-					"totalPrice": 80,
-					"vatRate": 0.20
-				}
-				""";
-		MvcResult result = mockMvc.perform(post("/api/products")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(postJson))
-				.andExpect(status().isCreated())
-				.andReturn();
-
-		Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-		// Update the product
-		String putJson = """
-				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
-				}
-				""";
-		mockMvc.perform(put("/api/products/" + id).contentType(MediaType.APPLICATION_JSON).content(putJson))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(id))
-				.andExpect(jsonPath("$.name").value("Expensive Keyboard"))
-				.andExpect(jsonPath("$.description").value("High quality mechanical keyboard"))
-				.andExpect(jsonPath("$.totalPrice").value(100))
-				.andExpect(jsonPath("$.vatRate").value(0.22))
-				.andExpect(jsonPath("$.netPrice").isNumber())
-				.andExpect(jsonPath("$.vatAmount").isNumber());
-	}
-
-	@Test
-	void updateProduct_shouldPersistProduct() throws Exception {
-		// Create a product
-		String postJson = """
-				{
-					"name": "Keyboard",
-					"description": "Mechanical keyboard",
-					"totalPrice": 80,
-					"vatRate": 0.20
-				}
-				""";
-		MvcResult result = mockMvc.perform(post("/api/products")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(postJson))
-				.andExpect(status().isCreated())
-				.andReturn();
-
-		Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-		// Update the product
-		String putJson = """
-				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
-				}
-				""";
-		mockMvc.perform(put("/api/products/" + id).contentType(MediaType.APPLICATION_JSON).content(putJson))
-				.andExpect(status().isOk());
-
-		// Get the updated product
-		mockMvc.perform(get("/api/products/" + id))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(id))
-				.andExpect(jsonPath("$.name").value("Expensive Keyboard"))
-				.andExpect(jsonPath("$.description").value("High quality mechanical keyboard"))
-				.andExpect(jsonPath("$.totalPrice").value(100))
-				.andExpect(jsonPath("$.vatRate").value(0.22))
-				.andExpect(jsonPath("$.netPrice").isNumber())
-				.andExpect(jsonPath("$.vatAmount").isNumber());
-	}
-
-	@Test
 	void updateProductWithInvalidPrice_shouldReturnBadRequest() throws Exception {
 		String json = """
 				{
@@ -391,40 +291,28 @@ class ProductApiTest {
 				.andExpect(jsonPath("$.detail").value("Product vatRate must be provided"));
 	}
 
-	@Test
-	void deleteUnexistingProduct_shouldReturnNoContent() throws Exception {
-		mockMvc.perform(delete("/api/products/1"))
-				.andExpect(status().isNoContent());
-	}
+	static Stream<Product> productsProvider() {
+		var p1 = new Product();
+		p1.setId(1L);
+		p1.setName("iPhone");
+		p1.setDescription("Cool smartphone");
+		p1.setTotalPrice(new java.math.BigDecimal("999.99"));
+		p1.setVatRate(new java.math.BigDecimal("0.22"));
 
-	@Test
-	void deleteProduct_shouldRemoveProduct() throws Exception {
-		// Create a product
-		String postJson = """
-				{
-					"name": "Expensive Keyboard",
-					"description": "High quality mechanical keyboard",
-					"totalPrice": 100,
-					"vatRate": 0.22
-				}
-				""";
-		MvcResult result = mockMvc.perform(post("/api/products")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(postJson))
-				.andExpect(status().isCreated())
-				.andReturn();
+		var p2 = new Product();
+		p2.setId(2L);
+		p2.setName("Apple Watch");
+		p2.setDescription("Nice watch");
+		p2.setTotalPrice(new java.math.BigDecimal("150"));
+		p2.setVatRate(new java.math.BigDecimal("0.21"));
 
-		Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-		// Get the product and expect 200 OK
-		mockMvc.perform(get("/api/products/" + id))
-				.andExpect(status().isOk());
+		var p3 = new Product();
+		p3.setId(3L);
+		p3.setName("Keyboard");
+		p3.setDescription("Keyboard description");
+		p3.setTotalPrice(new java.math.BigDecimal("9.58"));
+		p3.setVatRate(new java.math.BigDecimal("0.20"));
 
-		// Delete the product
-		mockMvc.perform(delete("/api/products/" + id))
-				.andExpect(status().isNoContent());
-
-		// Get the product and expect 404 Not Found
-		mockMvc.perform(get("/api/products/" + id))
-				.andExpect(status().isNotFound());
+		return Stream.of(p1, p2, p3);
 	}
 }

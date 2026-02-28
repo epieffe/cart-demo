@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn -q -e dependency:go-offline
 COPY src ./src
-RUN mvn -q -e compile -DskipTests
+RUN mvn -q -e compile test
 
 
 # Build and extract the jar file using an efficient layout for layering
