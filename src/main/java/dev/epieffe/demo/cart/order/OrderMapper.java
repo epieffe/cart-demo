@@ -42,6 +42,7 @@ public class OrderMapper {
 				order.getShippingAddress(),
 				order.getCreatedAt(),
 				order.getTotalPrice(),
+				order.getTotalPrice().subtract(order.getVatAmount()),
 				order.getVatAmount(),
 				products);
 	}
@@ -63,6 +64,7 @@ public class OrderMapper {
 				orderProduct.getQuantity(),
 				orderProduct.getName(),
 				orderProduct.getTotalPrice(),
+				orderProduct.getTotalPrice().subtract(orderProduct.getVatAmount()),
 				orderProduct.getVatAmount(),
 				orderProduct.getVatRate());
 	}

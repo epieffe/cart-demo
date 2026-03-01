@@ -152,6 +152,7 @@ Example response body:
   "shippingAddress": "via Roma, 5",
   "createdAt": "2026-02-27T00:30:16.173208024",
   "totalPrice": 2149.98,
+  "netPrice": 1762.28,
   "vatAmount": 387.70,
   "products": [
     {
@@ -159,6 +160,7 @@ Example response body:
       "quantity": 2,
       "name": "Samsung Galaxy S21",
       "totalPrice": 1999.98,
+      "netPrice": 1639.33,
       "vatAmount": 360.65,
       "vatRate": 0.22
     },
@@ -167,6 +169,7 @@ Example response body:
       "quantity": 1,
       "name": "Apple Watch",
       "totalPrice": 150.00,
+      "netPrice": 122.95,
       "vatAmount": 27.05,
       "vatRate": 0.22
     }
@@ -189,6 +192,7 @@ Example response body:
   "shippingAddress": "via Roma, 5",
   "createdAt": "2026-02-27T00:30:16.173208",
   "totalPrice": 2149.98,
+  "netPrice": 1762.28,
   "vatAmount": 387.70,
   "products": [
     {
@@ -196,6 +200,7 @@ Example response body:
       "quantity": 2,
       "name": "Samsung Galaxy S21",
       "totalPrice": 1999.98,
+      "netPrice": 1639.33,
       "vatAmount": 360.65,
       "vatRate": 0.22
     },
@@ -204,6 +209,7 @@ Example response body:
       "quantity": 1,
       "name": "Apple Watch",
       "totalPrice": 150.00,
+      "netPrice": 122.95,
       "vatAmount": 27.05,
       "vatRate": 0.22
     }

@@ -40,6 +40,7 @@ public class OrderControllerTest {
 				.andExpect(jsonPath("$.shippingAddress").value(order.getShippingAddress()))
 				.andExpect(jsonPath("$.createdAt").value(order.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME)))
 				.andExpect(jsonPath("$.totalPrice").value(order.getTotalPrice().doubleValue()))
+				.andExpect(jsonPath("$.netPrice").value(order.getTotalPrice().subtract(order.getVatAmount()).doubleValue()))
 				.andExpect(jsonPath("$.vatAmount").value(order.getVatAmount().doubleValue()));
 		for (int i = 0; i < order.getProducts().size(); i++) {
 			var p = order.getProducts().get(i);
@@ -47,6 +48,7 @@ public class OrderControllerTest {
 					.andExpect(jsonPath("$.products[" + i + "].quantity").value(p.getQuantity()))
 					.andExpect(jsonPath("$.products[" + i + "].name").value(p.getName()))
 					.andExpect(jsonPath("$.products[" + i + "].totalPrice").value(p.getTotalPrice().doubleValue()))
+					.andExpect(jsonPath("$.products[" + i + "].netPrice").value(p.getTotalPrice().subtract(p.getVatAmount()).doubleValue()))
 					.andExpect(jsonPath("$.products[" + i + "].vatAmount").value(p.getVatAmount().doubleValue()))
 					.andExpect(jsonPath("$.products[" + i + "].vatRate").value(p.getVatRate().doubleValue()));
 		}

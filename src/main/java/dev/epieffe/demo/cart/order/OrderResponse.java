@@ -20,6 +20,9 @@ public record OrderResponse(
 		@Schema(description = "Total order price (including VAT)", example = "999.99")
 		BigDecimal totalPrice,
 
+		@Schema(description = "Net price", example = "819.66")
+		BigDecimal netPrice,
+
 		@Schema(description = "VAT amount for the order", example = "180.33")
 		BigDecimal vatAmount,
 
@@ -39,6 +42,9 @@ public record OrderResponse(
 
 			@Schema(description = "Total price (including VAT)", example = "999.99")
 			BigDecimal totalPrice,
+
+			@Schema(description = "Net price", example = "819.66")
+			BigDecimal netPrice,
 
 			@Schema(description = "VAT amount", example = "180.33")
 			BigDecimal vatAmount,
