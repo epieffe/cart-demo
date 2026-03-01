@@ -1,7 +1,7 @@
 package dev.epieffe.demo.cart.order;
 
 import com.jayway.jsonpath.JsonPath;
-import dev.epieffe.demo.cart.UseDockerDatabase;
+import dev.epieffe.demo.cart.UsePostgresDatabase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@UseDockerDatabase
+@UsePostgresDatabase
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "/sql/populate_products.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/clean_orders.sql")
 public class OrdersApiIT {

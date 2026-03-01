@@ -1,9 +1,7 @@
 package dev.epieffe.demo.cart;
 
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlMergeMode;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,4 +13,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Import(TestContainersConfig.class)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-public @interface UseDockerDatabase { }
+public @interface UsePostgresDatabase { }
