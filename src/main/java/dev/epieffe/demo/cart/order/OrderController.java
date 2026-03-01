@@ -50,6 +50,7 @@ public class OrderController {
 	) throws InvalidOrderException {
 		LOG.info("Received request to create order: {}", request);
 		Order order = orderService.createOrder(request);
+		LOG.info("Created order with id: {}", order.getId());
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(OrderMapper.toResponse(order));
 	}

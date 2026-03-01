@@ -56,6 +56,7 @@ public class ProductController {
 	public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest request) {
 		LOG.info("Received request to create product: {}", request);
 		Product product = productService.createProduct(request);
+		LOG.info("Created product with id: {}", product.getId());
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(ProductMapper.toResponse(product));
 	}
