@@ -1,11 +1,6 @@
 # Cart Demo
  Simplified version of a purchase cart service.
 
- **Technologies:**
- - Java 21
- - Spring Boot 4
- - PostgreSQL 18
-
 **Table of contents:**
 - [Documentation](#documentation)
     - [Data model](#data-model)
@@ -21,6 +16,11 @@
 
 ## Documentation
 This section contains documentation for the Cart Demo service, as well as the considerations taken during the design phase.
+
+**Technologies:**
+- Java 21
+- Spring Boot 4
+- PostgreSQL 18
 
 ### Data model
 The following ER diagram describes how data is modeled in the database:
@@ -212,7 +212,7 @@ Example response body:
 
 ## How to run
 The Cart Demo service requires a PostgreSQL instance to run. When running using Docker Compose
-or the provided run script a PostgreSQL instance is automatically started in a Docker container.
+or the provided run script, a PostgreSQL instance is automatically started in a Docker container.
 
 When running in production or development, connection details for PostgreSQL can be provided
 through the following environment variables:
@@ -271,13 +271,12 @@ Simply run the Cart Demo service in development mode:
 ```
 
 ## Running tests
-Running the test suite for the Cart Demo service requires a PostgreSQL instance. If the `local` Spring profile
-is active, the application will use the Docker socket to automatically start a PostgreSQL container,
-otherwise it will connect to an external PostgreSQL instance as usual.
-
+While unit tests have no external dependency, a PostgreSQL instance is required to execute integration tests for the Cart Demo service.
+If the `local` Spring profile is active when running integration tests, the application will automatically start a
+PostgreSQL container using the Docker socket, otherwise it will connect to an external PostgreSQL instance as usual.
 
 ### Run tests in Docker container
-You can use the provided tests script to run the test suite in a Docker container:
+You can use the provided tests script to run the complete test suite in a Docker container:
 ```bash
 ./scripts/tests.sh
 ```
@@ -290,9 +289,28 @@ This script will:
 
 When the script terminates, all the created containers are deleted.
 
+#### Run unit tests only
+To only run unit tests:
+```bash
+docker build -t epieffe/cart-demo-base --target base .
+docker run --rm epieffe/cart-demo-base mvn -e test
+```
+
+Or just launch the `unit-tests.sh` script:
+
+```bash
+./scripts/unit-tests.sh
+```
+
 ### Run tests using Java
 This requires Java 21 or higher:
 ```bash
+./mvnw verify
+```
+This will start the tests with the `local` Spring profile enabled, and it will automatically
+start a PostgreSQL container using the Docker socket.
+
+#### Run unit tests only
+```bash
 ./mvnw test
 ```
-This will use the Docker socket to automatically start a PostgreSQL container.
