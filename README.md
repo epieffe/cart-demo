@@ -13,6 +13,7 @@
 - [Running tests](#running-tests)
     - [Run tests in Docker container](#run-tests-in-docker-container)
     - [Run tests using Java](#run-tests-using-java)
+- [Potential evolutions](#potential-evolutions)
 
 ## Documentation
 This section contains documentation for the Cart Demo service, as well as the considerations taken during the design phase.
@@ -314,3 +315,10 @@ start a PostgreSQL container using the Docker socket.
 ```bash
 ./mvnw test
 ```
+
+## Potential evolutions
+- Add user entity, link orders and products to their owner
+- Authentication and authorization
+- More advanced product search, possibly with [keyset pagination](https://use-the-index-luke.com/no-offset)
+- Search orders
+- Multi-country support with different currencies and VAT rounding rules
