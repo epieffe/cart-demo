@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Products", description = "Endpoints for managing products")
 public class ProductController {
 	private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 
@@ -68,7 +70,8 @@ public class ProductController {
 			@ApiResponse(
 					responseCode = "200",
 					description = "Product found",
-					content = @Content(mediaType = "application/json",
+					content = @Content(
+							mediaType = "application/json",
 							schema = @Schema(implementation = ProductResponse.class))),
 			@ApiResponse(
 					responseCode = "404",
@@ -119,7 +122,8 @@ public class ProductController {
 			@ApiResponse(
 					responseCode = "204",
 					description = "Product deleted successfully",
-					content = @Content(mediaType = "application/json",
+					content = @Content(
+							mediaType = "application/json",
 							schema = @Schema(implementation = ProductResponse.class)))})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteProductById(

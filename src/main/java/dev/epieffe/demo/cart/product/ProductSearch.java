@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @ParameterObject
 public record ProductSearch(
-		@Parameter(description = "Name search", example = "Samsung")
+		@Parameter(description = "Name search")
 		@Nullable String name,
 
 		@Parameter(description = "Maximum price")

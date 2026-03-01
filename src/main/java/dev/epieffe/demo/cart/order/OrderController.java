@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/orders")
+@Tag(name = "Orders", description = "Endpoints for managing orders")
 public class OrderController {
 	private static final Logger LOG = LoggerFactory.getLogger(OrderController.class);
 
@@ -62,7 +64,8 @@ public class OrderController {
 			@ApiResponse(
 					responseCode = "200",
 					description = "Order found",
-					content = @Content(mediaType = "application/json",
+					content = @Content(
+							mediaType = "application/json",
 							schema = @Schema(implementation = OrderResponse.class))),
 			@ApiResponse(
 					responseCode = "404",
