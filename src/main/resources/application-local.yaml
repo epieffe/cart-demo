@@ -10,4 +10,5 @@ spring:
 
 logging:
   level:
+    dev.epieffe.demo.cart: DEBUG
     sql: DEBUG
