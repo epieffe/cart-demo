@@ -4,7 +4,7 @@
 **Table of contents:**
 - [Documentation](#documentation)
     - [Data model](#data-model)
-    - [Vat amount computation](#vat-amount-computation)
+    - [VAT amount computation](#vat-amount-computation)
     - [API endpoints](#api-endpoints)
 - [How to run](#how-to-run)
     - [Run using Docker Compose](#run-using-docker-compose)
@@ -39,7 +39,7 @@ If a product is purchased in quantity greater than one, the `total_price` field 
 cumulative price of all purchased units. The VAT amount is calculated on the cumulative total price to reduce the impact of
 decimal rounding as much as possible. The computed VAT amount is stored in the `order_product` table for future reference.
 
-### Vat amount computation
+### VAT amount computation
 The Cart Demo service only supports currencies with two decimal digits, and it is specifically designed to comply with
 Italian VAT calculation rules.
 
